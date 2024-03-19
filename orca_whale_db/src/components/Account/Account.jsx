@@ -154,11 +154,10 @@ const Account = () => {
     const newUsername = data.target.username.value;
     const userReq = JSON.stringify({
       email: user.email,
-      username: initial,
-      newUsername: newUsername,
+      username: newUsername,
     });
 
-    fetch("http://localhost:3000/signup", {
+    fetch("http://localhost:3000/signup/updateUserName", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -288,9 +287,12 @@ const Account = () => {
           <div className=" flex-1" /> {/* Flex item for spacing */}
           {/* User's avatar */}
           <div className="flex-1">
-            <div className="bg-black rounded-[100%] w-[230px] h-[230px]" onClick={() => {
-              setAvatar(true);
-            }}>
+            <div
+              className="bg-black rounded-[100%] w-[230px] h-[230px]"
+              onClick={() => {
+                setAvatar(true);
+              }}
+            >
               <Avatar email={user.email} page={"account"} />
             </div>
           </div>

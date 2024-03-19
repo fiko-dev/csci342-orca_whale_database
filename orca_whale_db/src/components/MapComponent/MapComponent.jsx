@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -37,6 +37,7 @@ const center = {
 function MapComponent() {
   const [markers, setMarkers] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [reload, setReload] = useState(false);
   const { isLoaded, map } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
@@ -44,15 +45,28 @@ function MapComponent() {
 
   useEffect(() => {
     // Fetch sightings data from backend when component mounts
-    axios.get('http://localhost:3000/sightings') // Assuming your backend route for sightings is '/sightings'
-      .then(response => {
+    axios
+      .get("http://localhost:3000/sightings") // Assuming your backend route for sightings is '/sightings'
+      .then((response) => {
         console.log(response.data.result);
         setMarkers(response.data.result); // Assuming sightings data is stored in response.data.result
       })
-      .catch(error => {
-        console.error('Error fetching sightings:', error);
+      .catch((error) => {
+        console.error("Error fetching sightings:", error);
       });
-  }, []);
+  }, [reload]);
+
+  const handleDelete = async () => {
+    try {
+      await fetch("http://localhost:3000/sightings", {
+        method: "DELETE",
+        body: selectedMarker._id,
+      });
+      setReload(!reload);
+    } catch (error) {
+      console.log("Error deleting sighting", error);
+    }
+  };
 
   const handleMarkerClick = (marker) => {
     setSelectedMarker(marker);
@@ -124,6 +138,7 @@ function MapComponent() {
                     Species: {selectedMarker.species}
                   </h2>
                   <p className="text-sm text-gray-500">{`Description: ${selectedMarker.description}`}</p>
+                  <button onClick={handleDelete}>Delete Sighting</button>
                 </div>
               </InfoWindow>
             )}

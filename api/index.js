@@ -26,6 +26,9 @@ app.use("/posts", postsRouter);
 const signupRouter = require("./routes/signup.js");
 app.use("/signup", signupRouter);
 
+const signupRouter = require("./routes/signup.js");
+app.use("/signup/updateUserName", signupRouter);
+
 const loginRouter = require("./routes/login.js");
 app.use("/login", loginRouter);
 
